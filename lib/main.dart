@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() => runApp(const MyApp());
 
@@ -8,6 +10,7 @@ class TouristPlace {
   final String description;
   final int likes;
   final String image;
+  final String mapUrl;
 
   const TouristPlace({
     required this.name,
@@ -15,6 +18,7 @@ class TouristPlace {
     required this.description,
     required this.likes,
     required this.image,
+    required this.mapUrl,
   });
 }
 
@@ -24,6 +28,7 @@ const List<TouristPlace> places = [
     location: 'Baños, Tungurahua',
     likes: 95,
     image: 'images/diablo.jpg',
+    mapUrl: 'https://maps.google.com/?q=Pailon+del+Diablo+Ecuador',
     description:
         'Una de las cascadas más impresionantes del Ecuador. Se encuentra en Baños de Agua Santa y ofrece senderos, puentes colgantes y miradores cercanos a la caída de agua.',
   ),
@@ -32,6 +37,7 @@ const List<TouristPlace> places = [
     location: 'Quito, Pichincha',
     likes: 88,
     image: 'images/mundo.webp',
+    mapUrl: 'https://maps.google.com/?q=Mitad+del+Mundo+Quito',
     description:
         'Monumento turístico ubicado en la línea ecuatorial. Permite conocer experimentos relacionados con la ubicación geográfica y la historia de las misiones geodésicas.',
   ),
@@ -40,6 +46,7 @@ const List<TouristPlace> places = [
     location: 'Guayaquil, Guayas',
     likes: 82,
     image: 'images/malecon.jpg',
+    mapUrl: 'https://maps.google.com/?q=Malecon+2000+Guayaquil',
     description:
         'Paseo turístico junto al río Guayas que cuenta con jardines, monumentos, museos, restaurantes y espacios recreativos para toda la familia.',
   ),
@@ -48,6 +55,7 @@ const List<TouristPlace> places = [
     location: 'Morona Santiago',
     likes: 77,
     image: 'images/tallos.jpg',
+    mapUrl: 'https://maps.google.com/?q=Cueva+de+los+Tayos+Ecuador',
     description:
         'Sistema de cuevas ubicado en la Amazonía ecuatoriana. Es reconocido por sus formaciones subterráneas y las numerosas leyendas que rodean este lugar.',
   ),
@@ -56,6 +64,7 @@ const List<TouristPlace> places = [
     location: 'Chimborazo',
     likes: 69,
     image: 'images/palmira.jpeg',
+    mapUrl: 'https://maps.google.com/?q=Desierto+de+Palmira+Ecuador',
     description:
         'Paisaje único formado por extensas dunas de arena rodeadas por montañas andinas. Es considerado uno de los lugares más peculiares del Ecuador.',
   ),
@@ -64,6 +73,7 @@ const List<TouristPlace> places = [
     location: 'Quito, Centro Histórico',
     likes: 74,
     image: 'images/iglesia.webp',
+    mapUrl: 'https://maps.google.com/?q=Iglesia+de+San+Francisco+Quito',
     description:
         'Templo colonial construido durante la época española. Destaca por su arquitectura, obras de arte religioso y su importancia histórica para el país.',
   ),
@@ -72,6 +82,7 @@ const List<TouristPlace> places = [
     location: 'Tungurahua',
     likes: 91,
     image: 'images/agua.jpg',
+    mapUrl: 'https://maps.google.com/?q=Banos+de+Agua+Santa',
     description:
         'Ciudad turística famosa por sus cascadas, aguas termales, deportes extremos y actividades de aventura rodeadas de naturaleza.',
   ),
@@ -80,6 +91,7 @@ const List<TouristPlace> places = [
     location: 'Cotopaxi',
     likes: 93,
     image: 'images/laguna.jpeg',
+    mapUrl: 'https://maps.google.com/?q=Laguna+de+Quilotoa',
     description:
         'Laguna de origen volcánico ubicada dentro de un cráter. Sus aguas de color turquesa y los senderos alrededor la convierten en uno de los principales atractivos del Ecuador.',
   ),
@@ -88,6 +100,7 @@ const List<TouristPlace> places = [
     location: 'Galápagos',
     likes: 98,
     image: 'images/isla.jpg',
+    mapUrl: 'https://maps.google.com/?q=Isla+Isabela+Galapagos',
     description:
         'La isla más grande del archipiélago de Galápagos. Alberga volcanes, playas, tortugas gigantes e importantes ecosistemas protegidos.',
   ),
@@ -96,6 +109,7 @@ const List<TouristPlace> places = [
     location: 'Napo',
     likes: 85,
     image: 'images/termas.jpg',
+    mapUrl: 'https://maps.google.com/?q=Termas+de+Papallacta',
     description:
         'Complejo turístico de aguas termales ubicado en la cordillera oriental. Es reconocido por sus piscinas naturales y paisajes montañosos.',
   ),
@@ -148,6 +162,18 @@ class TouristPlaceCard extends StatelessWidget {
 
   final TouristPlace place;
 
+  Future<void> openMap() async {
+    final Uri uri = Uri.parse(place.mapUrl);
+
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
+  Future<void> sharePlace() async {
+    await Share.share(
+      '${place.name}\n${place.location}\n${place.description}\n\nUbicación: ${place.mapUrl}',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -169,7 +195,7 @@ class TouristPlaceCard extends StatelessWidget {
               likes: place.likes,
             ),
             const SizedBox(height: 8),
-            const ButtonSection(),
+            ButtonSection(onLocationTap: openMap, onShareTap: sharePlace),
             const SizedBox(height: 14),
             TextSection(description: place.description),
           ],
@@ -309,7 +335,14 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
 }
 
 class ButtonSection extends StatelessWidget {
-  const ButtonSection({super.key});
+  const ButtonSection({
+    super.key,
+    required this.onLocationTap,
+    required this.onShareTap,
+  });
+
+  final VoidCallback onLocationTap;
+  final VoidCallback onShareTap;
 
   @override
   Widget build(BuildContext context) {
@@ -318,14 +351,20 @@ class ButtonSection extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: ButtonWithText(color: color, icon: Icons.info, label: 'INFO'),
+          child: ButtonWithText(
+            color: color,
+            icon: Icons.info,
+            label: 'INFO',
+            onTap: () {},
+          ),
         ),
         const SizedBox(width: 8),
         Expanded(
           child: ButtonWithText(
             color: color,
-            icon: Icons.near_me,
-            label: 'MAPA',
+            icon: Icons.location_on,
+            label: 'UBICACIÓN',
+            onTap: onLocationTap,
           ),
         ),
         const SizedBox(width: 8),
@@ -334,6 +373,7 @@ class ButtonSection extends StatelessWidget {
             color: color,
             icon: Icons.share,
             label: 'COMPARTIR',
+            onTap: onShareTap,
           ),
         ),
       ],
@@ -347,17 +387,19 @@ class ButtonWithText extends StatelessWidget {
     required this.color,
     required this.icon,
     required this.label,
+    required this.onTap,
   });
 
   final Color color;
   final IconData icon;
   final String label;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(16),
-      onTap: () {},
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
