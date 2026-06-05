@@ -28,7 +28,7 @@ const List<TouristPlace> places = [
     location: 'Baños, Tungurahua',
     likes: 95,
     image: 'images/diablo.jpg',
-    mapUrl: 'https://maps.google.com/?q=Pailon+del+Diablo+Ecuador',
+    mapUrl: 'https://maps.app.goo.gl/4kSke8UYTzj2n14k9',
     description:
         'Una de las cascadas más impresionantes del Ecuador. Se encuentra en Baños de Agua Santa y ofrece senderos, puentes colgantes y miradores cercanos a la caída de agua.',
   ),
@@ -109,7 +109,7 @@ const List<TouristPlace> places = [
     location: 'Napo',
     likes: 85,
     image: 'images/termas.jpg',
-    mapUrl: 'https://maps.google.com/?q=Termas+de+Papallacta',
+    mapUrl: 'https://maps.app.goo.gl/n4arhS5jmCRn9Zdp6',
     description:
         'Complejo turístico de aguas termales ubicado en la cordillera oriental. Es reconocido por sus piscinas naturales y paisajes montañosos.',
   ),
